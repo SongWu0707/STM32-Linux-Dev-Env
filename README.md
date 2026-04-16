@@ -315,7 +315,7 @@ launch.json:
     ]
 }
 
-
+现在用VScode 打开ia项目的终端，输入make。就可以看见一键订阅了。
 
 
 
