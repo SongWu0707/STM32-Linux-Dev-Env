@@ -235,6 +235,86 @@ flash: $(BUILD_DIR)/$(TARGET).elf
 
 
 
+第二步：在你这个项目的“根目录”中建一个名为.vscode的文件夹，在里面新建3个文件
+1、c_cpp_properties.json (消灭波浪线，实现代码跳转)
+2、tasks.json (一键编译)
+3、launch.json (一键烧录与断点调试)
+
+没有这三个配置文件，VS Code 就只是个高级记事本（代码会疯狂报红波浪线），有了它们，VS Code 就会变成比 Keil 还要顺手的现代 IDE。
+
+
+以下是3个文件的内容，我也给大家整理好了
+c_cpp_properties.json:
+{
+    "configurations": [
+        {
+            "name": "STM32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/Core/Inc",
+                "${workspaceFolder}/Drivers/BSP",
+                "${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc",
+                "${workspaceFolder}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+                "${workspaceFolder}/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+                "${workspaceFolder}/Drivers/CMSIS/Include"
+            ],
+            "defines": [
+                "USE_HAL_DRIVER",
+                "STM32F103xB"
+            ],
+            "compilerPath": "/usr/bin/arm-none-eabi-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-gcc-arm"
+        }
+    ],
+    "version": 4
+}
+
+tasks.json:
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build (Make)",
+            "type": "shell",
+            "command": "make",
+            "args": ["-j4"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "make clean",
+            "problemMatcher": []
+        }
+    ]
+}
+
+launch.json:
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/template.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f1x.cfg"
+            ]
+        }
+    ]
+}
+
 
 
 
