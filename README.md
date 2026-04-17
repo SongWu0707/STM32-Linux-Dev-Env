@@ -5,7 +5,7 @@
 
 作为一个习惯了掌握底层逻辑的开发者，受够了 Windows 下 Keil 臃肿的界面和高度绑定的工具链。这篇文档记录了我如何将 STM32 开发环境全面迁移到 Linux (Ubuntu)，实现 VS Code + Makefile + GCC 的纯手工极客工作流。
 
-## 1. 核心思路：向 CubeMX “借”底层 咱们先下载 STM32CubeMX
+# 1. 核心思路：向 CubeMX “借”底层 咱们先下载 STM32CubeMX
 我们不使用 CubeMX 生成臃肿的业务代码，只用它来精准提取以下三个最核心的底层文件：
 * `startup_stm32f103xb.s` (启动文件)
 * `STM32F103XX_FLASH.ld` (链接脚本)
@@ -13,31 +13,31 @@
 
 * CubeMX界面配置（我用的是F103,仅仅只做参考）
 * 
-* 在Pinouot&Configuration界面下
+* ## 在 Pinouot&Configuration 界面下
 * RCC--->High Speed CLock(HSE): Crystal/Ceramic Resonator......
 * SYS--->Debug：Serial Wire
 * 
-* 在Colck Configuration界面下
+* ## 在Colck Configuration界面下
 * 直接将HCLK （MHz）：写成 72Mhz  就ok了
 
-* 然后在Project Manager界面下
+* ## 然后在Project Manager界面下
 * 在Project中
 * Toolchain/IDE ----> 一定要选择 Makefile！！
 
 * 
-* 在Code Generator界面下
+* ## 在Code Generator界面下
 * 勾选 Copy only necessary libary files
 * 勾选 Generate perpheral initalization as a pair of '.c / .h'........
 
-* 点击GENERATE CODE   生成成功
+* ## 点击GENERATE CODE   生成成功
 * 
 
 
 
-## 2. 打造纯净的“黄金模板” (Golden Template)
+# 2. 打造纯净的“黄金模板” (Golden Template)
 经过精简，我将工程结构改造为以下分类，将官方库与手写代码（BSP）彻底分离：
 （这里可以写一下我们建立的 `Core`、`Drivers/BSP` 结构）
-# 第一部分：改造CubeMX生成的Makefile
+## 第一部分：改造CubeMX生成的Makefile
 这里我直接给到大家，大家可以直接copy使用，绝对ok的
 
 Makefile:
@@ -235,7 +235,7 @@ flash: $(BUILD_DIR)/$(TARGET).elf
 ```
 
 
-# 第二步：在你这个项目的“根目录”中建一个名为.vscode的文件夹，在里面新建3个文件
+## 第二步：在你这个项目的“根目录”中建一个名为.vscode的文件夹，在里面新建3个文件
 1、c_cpp_properties.json (消灭波浪线，实现代码跳转)
 2、tasks.json (一键编译)
 3、launch.json (一键烧录与断点调试)
@@ -327,18 +327,18 @@ launch.json:
 
 
 
-## 3. 注入灵魂：自动化 Makefile 改造
+# 3. 注入灵魂：自动化 Makefile 改造
 原生的 Makefile 每次加文件都要手动改？不行。我将其改造为自动扫描 `.c` 文件的智能模式：
 （在这里贴上你修改过的那段 `C_SOURCES = $(wildcard ...)` 的代码）
 
-## 4. 补齐 VS Code 极客配置
+# 4. 补齐 VS Code 极客配置
 为了拥有代码跳转和一键编译烧录体验，在 `.vscode` 文件夹中配置了三个核心文件：
 * `c_cpp_properties.json`：解决头文件波浪线
 * `tasks.json`：绑定 `make -j4` 快捷编译
 * `launch.json`：绑定 OpenOCD 调试
 （可以选择性地把你的 JSON 代码贴上来）
 
-## 5. 终极大招：一键生成工程 Shell 脚本
+# 5. 终极大招：一键生成工程 Shell 脚本
 为了彻底告别“复制粘贴”，我写了一个全局 Shell 脚本。只需在终端敲入 `new_stm32 <项目名>`，一秒钟内即可拉取黄金模板、自动重命名目标文件、甚至自动完成首次 Git 提交。
 
 （在这里贴上你那个超牛的 `new_stm32` 脚本代码！）
