@@ -381,6 +381,16 @@ git commit -m "chore: initial commit from golden template" > /dev/null 2>&1
 echo -e "\033[32m✅ 恭喜！新工程 $PROJECT_NAME 已创建完毕！\033[0m"
 ```
 
+## 如果出现终端输入new_stm32 未找到命令 就输入以下命令进行刷新
+```
+source ~/.profile
+```
+或者
+```
+source ~/.bashrc
+```
+
+接着再试一下new_stm32 TestProject
 
 ## 总结
 脱离 IDE 的舒适区，虽然初期会遇到找不着命令的痛苦，但真正打通任督二脉后，这种对代码从编译到链接拥有 100% 掌控力的感觉，才是真正属于工程师的浪漫！
