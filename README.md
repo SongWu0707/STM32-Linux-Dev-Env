@@ -37,7 +37,7 @@
 ## 2. 打造纯净的“黄金模板” (Golden Template)
 经过精简，我将工程结构改造为以下分类，将官方库与手写代码（BSP）彻底分离：
 （这里可以写一下我们建立的 `Core`、`Drivers/BSP` 结构）
-第一部分：改造CubeMX生成的Makefile
+#第一部分：改造CubeMX生成的Makefile
 这里我直接给到大家，大家可以直接copy使用，绝对ok的
 
 Makefile:
@@ -235,7 +235,7 @@ flash: $(BUILD_DIR)/$(TARGET).elf
 ```
 
 
-第二步：在你这个项目的“根目录”中建一个名为.vscode的文件夹，在里面新建3个文件
+#第二步：在你这个项目的“根目录”中建一个名为.vscode的文件夹，在里面新建3个文件
 1、c_cpp_properties.json (消灭波浪线，实现代码跳转)
 2、tasks.json (一键编译)
 3、launch.json (一键烧录与断点调试)
