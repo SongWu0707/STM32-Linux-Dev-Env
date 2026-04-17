@@ -332,10 +332,55 @@ launch.json:
 
 
 
-# 5. 终极大招：一键生成工程 Shell 脚本
+# 3. 终极大招：一键生成工程 Shell 脚本
 为了彻底告别“复制粘贴”，我写了一个全局 Shell 脚本。只需在终端敲入 `new_stm32 <项目名>`，一秒钟内即可拉取黄金模板、自动重命名目标文件、甚至自动完成首次 Git 提交。
+## 第一步：创建必须的文件夹
+```
+mkdir -p ~/.local/bin
+```
+## 第二步：用 VS Code 打开/创建脚本文件
+```
+code ~/.local/bin/new_stm32
+```
+## 第三步:把完整的shell脚本代码粘贴进去
+```
+#!/bin/bash
 
-（在这里贴上你那个超牛的 `new_stm32` 脚本代码！）
+# 这里已经指向了你真正用来开发的黄金模板
+TEMPLATE_DIR="$HOME/SW_STM32_Project_MuBan/golden_template"
+
+if [ -z "$1" ]; then
+  echo -e "\033[31m错误: 请输入新项目的名称！\033[0m"
+  echo "用法: new_stm32 <项目名称>"
+  exit 1
+fi
+
+PROJECT_NAME=$1
+TARGET_DIR="$(pwd)/$PROJECT_NAME"
+
+if [ -d "$TARGET_DIR" ]; then
+  echo -e "\033[31m错误: 当前目录下已经存在名为 $PROJECT_NAME 的文件夹！\033[0m"
+  exit 1
+fi
+
+echo "正在从黄金模板复制底层骨架..."
+cp -a "$TEMPLATE_DIR" "$TARGET_DIR"
+
+# 自动修改 Makefile 里的 TARGET 名字
+sed -i "s/^TARGET = .*/TARGET = $PROJECT_NAME/" "$TARGET_DIR/Makefile"
+
+# 清理模板自带的编译残留
+rm -rf "$TARGET_DIR/build"
+
+# 初始化 Git
+cd "$TARGET_DIR" || exit
+git init > /dev/null 2>&1
+git add . > /dev/null 2>&1
+git commit -m "chore: initial commit from golden template" > /dev/null 2>&1
+
+echo -e "\033[32m✅ 恭喜！新工程 $PROJECT_NAME 已创建完毕！\033[0m"
+```
+
 
 ## 总结
 脱离 IDE 的舒适区，虽然初期会遇到找不着命令的痛苦，但真正打通任督二脉后，这种对代码从编译到链接拥有 100% 掌控力的感觉，才是真正属于工程师的浪漫！
